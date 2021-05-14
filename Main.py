@@ -7,7 +7,7 @@ white = (0, 0, 0)
 screen = pygame.display.set_mode((width, height))  # Making of the screen
 pygame.display.set_caption("Cellular automaton")
 
-gridSize = 10  # musi być wielokrotnością 2
+gridSize = 6  # musi być wielokrotnością 2
 drawGridLines = False
 updateTime = 0.05
 board = [];
@@ -82,7 +82,7 @@ def processBoard():
         boardCopy = board
         Count=Count+1
         for y in range(int(len(board))//2):
-            for x in range(int(len(board))//2-1):
+            for x in range(int(len(board))//2):
                 nc = neighbourCount(2 * x, 2 * y)
                 if x == gridSize - 1 and y < gridSize - 1:
                     transformed = [
@@ -114,7 +114,7 @@ def processBoard():
                     ]
                 # tutaj zdefiniujemy zasady a potem x i y +1 i mamy drugą siatke K
                 if nc == [1, 0, 0, 0]:
-                    if y < gridSize - 1 and x < gridSize - 1:
+                    if 2*y < gridSize - 1 and 2*x < gridSize - 1:
                         #  transformed[0]=0
                         # transformed[1]=0
                         # transformed[2]=0
@@ -128,7 +128,7 @@ def processBoard():
         boardCopy = board
         Count=Count+1
         for y in range(int(len(board))//2):
-            for x in range(int(len(board))//2-1):
+            for x in range(int(len(board))//2):
 
                 nc = neighbourCount(2*x+1,2*y+1)
                 if x == gridSize - 1 and y < gridSize - 1:
@@ -161,7 +161,7 @@ def processBoard():
                     ]
                 # tutaj zdefiniujemy zasady a potem x i y +1 i mamy drugą siatke K
                 if nc == [1, 0, 0, 0]:
-                    if y < gridSize - 1 and x < gridSize - 1:
+                    if 2*y < gridSize - 2 and 2*x < gridSize - 2:
                         #  transformed[0]=0
                         # transformed[1]=0
                         # transformed[2]=0
