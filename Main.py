@@ -9,10 +9,9 @@ black = (0, 0, 0)
 (width, height) = (800, 800)  # Dimension of the window
 #screen = pygame.display.set_mode((width, height))  # Making of the screen
 pygame.display.set_caption("Cellular automaton")
-flags = FULLSCREEN | DOUBLEBUF
+flags = DOUBLEBUF
 resolution=[width,height]
 screen = pygame.display.set_mode(resolution, flags, 16)
-
 gridSize = 100  # musi być wielokrotnością 2
 drawGridLines = False
 updateTime = 0.01
@@ -44,6 +43,17 @@ def drawGrid():
 
     for x in range(1, gridSize):
         pygame.draw.line(screen, black, (int((width / gridSize) * x), 0), (int((width / gridSize) * x), height), 1)
+
+
+
+def fillCell2(x, y):
+    if x < 0 or x > gridSize or y < 0 or y > gridSize:
+        raise Exception("Invalid coords: " + str(x) + ":" + str(y));
+
+    pygame.draw.rect(screen, white, (
+        x * int(width / gridSize), int(y * (height / gridSize)), int(width / gridSize), int(height / gridSize)))
+
+
 
 
 def fillCell(x, y):
@@ -154,15 +164,19 @@ def drawCells():
         for x in range(len(board[y])):
             if board[y][x] == 1:
                 fillCell(x, y)
+            if board[y][x] == 0:
+                fillCell2(x, y)
 
 
 pattern = [
-    [1,0,0,0,0,1 ],
-    [0,1,1,1,1,0 ],
-    [0,1,1,1,1,0 ],
-    [0,1,1,1,1,0 ],
-    [0,1,0,0,0,0 ],
-    [1,0,0,0,0,0 ],
+[1,1,1,1,1,1,1,1 ],
+[1,1,1,1,1,1,1,1 ],
+[1,1,1,1,1,1,1,1 ],
+[1,1,1,1,1,1,1,1 ],
+[1,1,1,1,1,1,1,1 ],
+[1,1,1,1,1,1,1,1 ],
+[1,1,1,1,1,1,1,1 ],
+[1,1,1,1,1,1,1,1 ]
 ]
 def drawrandompatern(size):
     tab= np.random.randint(2,size=(size, size))
@@ -184,7 +198,8 @@ def drawrandompatern(size):
 # ]
 
 initBoard()
-placePattern(drawrandompatern(50), 25, 25)
+placePattern(drawrandompatern(20), 0, 0)
+#placePattern(pattern,0,0)
 
 running = True
 prevTime = datetime.now()
@@ -195,18 +210,21 @@ while 1:
 
     if (time - prevTime).total_seconds() > updateTime:
         processBoard()
-        prevTime = time
-    time=datetime.now()
-    if (time - prevTime).total_seconds() > updateTime:
+        drawCells()
+        pygame.display.flip()
         processBoard2()
+        drawCells()
+        pygame.display.flip()
         prevTime = time
+        drawGridLines=not drawGridLines
 
+
+    print("test")
     if drawGridLines:
         drawGrid()
 
     drawCells()
     pygame.display.flip()
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
