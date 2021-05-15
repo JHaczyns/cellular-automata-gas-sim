@@ -28,14 +28,16 @@ board = []
 # kolejne X to stan sprawdzany, a Y- stan generowany w kolejności Lewy górny róg,
 #Prawy górny róg, Lewy dolny róg, prawy dolny róg
 filename="test"
+randompatternsize=50
 
 event, values = sg.Window('Wybierz zestaw reguł', [[sg.Text('Wybierz zestaw reguł:'), sg.Listbox(['Negacja.txt','NieDlaEpileptykow.txt', 'Interesujace.txt'], size=(20, 3), key='Choice')],
+[sg.Text('Wybierz rozmiar generowanego wzoru'), sg.Listbox(['10','20', '50','100'], size=(20, 3), key='Choice2')],
     [sg.Button('Ok'), sg.Button('Domyślny')]]).read(close=True)
 
 if event == 'Ok':
     sg.popup(f'Wybrano {values["Choice"][0]}')
     filename=values["Choice"][0]
-
+    randompatternsize=int(values["Choice2"][0])
 
 
 else:
@@ -214,7 +216,7 @@ def drawrandompatern(size):
 #inicjalizacja tablicy
 initBoard()
 #Umieszczenie wzoru w tablicy
-placePattern(drawrandompatern(14), 0, 0)
+placePattern(drawrandompatern(randompatternsize), 0, 0)
 #placePattern(pattern,0,0)
 
 #Pobranie aktualnego czasu
