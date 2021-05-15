@@ -1,15 +1,16 @@
 import pygame
 from datetime import datetime
-
+import random
+import numpy as np
 white = (255, 255, 255)
 black = (0, 0, 0)
 (width, height) = (800, 800)  # Dimension of the window
 screen = pygame.display.set_mode((width, height))  # Making of the screen
 pygame.display.set_caption("Cellular automaton")
 
-gridSize = 36  # musi być wielokrotnością 2
+gridSize = 200  # musi być wielokrotnością 2
 drawGridLines = True
-updateTime = 0.01
+updateTime = 0.001
 board = [];
 file =open("test")
 tablicatestowa=[]
@@ -126,7 +127,9 @@ def processBoard():
                     if nc == tablicatestowa[i]:
                             test = tablicatestowa[i+1]
                             transform(test, x, y, board)
+        return board
 def processBoard2():
+        global board
         for y in range(1,int(len(board)),2):
             for x in range(1,int(len(board[y])),2):
                 for i in range(0, len(tablicatestowa), 2):
@@ -136,7 +139,7 @@ def processBoard2():
                     if nc == tablicatestowa[i]:
                         test = tablicatestowa[i + 1]
                         transform(test, x, y, board)
-
+        return board
 
 
 
@@ -149,13 +152,18 @@ def drawCells():
 
 
 pattern = [
-    [0, 0, 0, 0, 0, 0, ],
-    [0, 1, 0, 1, 0, 1, ],
-    [0, 0, 1, 1, 0, 0, ],
-    [0, 0, 1, 1, 0, 0, ],
-    [0, 0, 0, 0, 0, 0, ],
-    [0, 0, 0, 0, 0, 0, ],
+    [1, 1, 1, 1, 1, 1, ],
+    [1, 1, 1, 1, 1, 1, ],
+    [1, 1, 1, 1, 1, 1, ],
+    [1, 1, 1, 1, 1, 1, ],
+    [1, 1, 1, 1, 1, 1, ],
+    [1, 1, 1, 1, 1, 1, ]
 ]
+def drawrandompatern(size):
+    tab= np.random.randint(2,size=(size, size))
+    return tab
+
+
 
 # pattern = [
 #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -171,7 +179,7 @@ pattern = [
 # ]
 
 initBoard()
-placePattern(pattern, 0, 0)
+placePattern(drawrandompatern(100), 0, 0)
 
 running = True
 prevTime = datetime.now()
