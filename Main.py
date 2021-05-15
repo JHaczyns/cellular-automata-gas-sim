@@ -3,6 +3,7 @@ from datetime import datetime
 import random
 import numpy as np
 from pygame.locals import *
+import PySimpleGUI as sg
 #Definicja kolorów RGB
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -26,7 +27,22 @@ board = []
 #odczytanie pliku z zdefiniowanymi zasadami gry, w formacie X,X,X,X Y,Y,Y,Y
 # kolejne X to stan sprawdzany, a Y- stan generowany w kolejności Lewy górny róg,
 #Prawy górny róg, Lewy dolny róg, prawy dolny róg
-file =open("test")
+filename="test"
+
+event, values = sg.Window('Wybierz zestaw reguł', [[sg.Text('Wybierz zestaw reguł:'), sg.Listbox(['Negacja.txt','NieDlaEpileptykow.txt', 'Interesujace.txt'], size=(20, 3), key='Choice')],
+    [sg.Button('Ok'), sg.Button('Domyślny')]]).read(close=True)
+
+if event == 'Ok':
+    sg.popup(f'Wybrano {values["Choice"][0]}')
+    filename=values["Choice"][0]
+
+
+
+else:
+    sg.popup('W takim razie uruchomiona zostanie wersja domyślna')
+
+
+file =open(filename)
 tablicatestowa=[]
 for i in file:
     t=i.split(" ")
