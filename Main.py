@@ -9,7 +9,7 @@ pygame.display.set_caption("Cellular automaton")
 
 gridSize = 6  # musi być wielokrotnością 2
 drawGridLines = True
-updateTime = 0.1
+updateTime = 0.05
 board = [];
 file =open("test")
 tablicatestowa=[]
@@ -125,7 +125,6 @@ def processBoard():
 
                     if nc == tablicatestowa[i]:
                             test = tablicatestowa[i+1]
-                            print(test)
                             transform(test, x, y, board)
 def processBoard2():
         for y in range(1,int(len(board)),2):
@@ -136,7 +135,6 @@ def processBoard2():
 
                     if nc == tablicatestowa[i]:
                         test = tablicatestowa[i + 1]
-                        print(test)
                         transform(test, x, y, board)
 
 
