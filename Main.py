@@ -46,6 +46,7 @@ if event == 'Ok':
 
 
 
+
 else:
     sg.popup('W takim razie uruchomiona zostanie wersja domyślna')
 
