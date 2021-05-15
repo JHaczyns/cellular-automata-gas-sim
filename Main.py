@@ -258,3 +258,4 @@ while 1:
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
+            exit()
