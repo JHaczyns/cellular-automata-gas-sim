@@ -35,9 +35,15 @@ event, values = sg.Window('Wybierz zestaw reguł', [[sg.Text('Wybierz zestaw reg
     [sg.Button('Ok'), sg.Button('Domyślny')]]).read(close=True)
 
 if event == 'Ok':
-    sg.popup(f'Wybrano {values["Choice"][0]}')
-    filename=values["Choice"][0]
-    randompatternsize=int(values["Choice2"][0])
+
+    try:
+        sg.popup(f'Wybrano {values["Choice"][0]}')
+        filename=values["Choice"][0]
+        randompatternsize=int(values["Choice2"][0])
+    except Exception:
+        filename="test"
+        randompatternsize = 50
+
 
 
 else:
