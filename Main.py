@@ -8,8 +8,8 @@ screen = pygame.display.set_mode((width, height))  # Making of the screen
 pygame.display.set_caption("Cellular automaton")
 
 gridSize = 6  # musi być wielokrotnością 2
-drawGridLines = False
-updateTime = 0.05
+drawGridLines = True
+updateTime = 0.1
 board = [];
 
 
@@ -73,105 +73,51 @@ def neighbourCount(x, y):
 
     neighbours = [UL, UR, DL, DR]
     return neighbours
+def transform(UL,UR,DL,DR,x,y,boards):
+
+                if x == gridSize - 1 and y < gridSize - 1:
+                    boards[y][gridSize - 1]=UL
+                    boards[y][0]=UR
+                    boards[y + 1][x]=DL
+                    boards[y + 1][0]=DR
+                if y == gridSize - 1 and x < gridSize - 1:
+                    boards[y][x]=UL
+                    boards[y][x + 1]=UR
+                    boards[0][x]=DL
+                    boards[0][x + 1]=DR
+                if y == gridSize - 1 and x == gridSize - 1:
+                    boards[y][x]=UL
+                    boards[gridSize - 1][0]=UR
+                    boards[0][gridSize - 1]=DL
+                    boards[0][0]=DR
+                if y < gridSize - 1 and x < gridSize - 1:
+                    boards[y][x]=UL
+                    boards[y][x + 1]=UR
+                    boards[y + 1][x]=DL
+                    boards[y + 1][x + 1]=DR
+
+                boards=board
+                return board
 
 
 def processBoard():
-    global board
-    Count =2
-    if (Count % 2 == 0):
-        boardCopy = board
-        Count=Count+1
-        for y in range(int(len(board))//2):
-            for x in range(int(len(board))//2):
-                nc = neighbourCount(2 * x, 2 * y)
-                if x == gridSize - 1 and y < gridSize - 1:
-                    transformed = [
-                        boardCopy[y][gridSize - 1],
-                        boardCopy[y][0],
-                        boardCopy[y + 1][x],
-                        boardCopy[y + 1][0]
-                    ]
-                if y == gridSize - 1 and x < gridSize - 1:
-                    transformed = [
-                        boardCopy[y][x],
-                        boardCopy[y][x + 1],
-                        boardCopy[0][x],
-                        boardCopy[0][x + 1]
-                    ]
-                if y == gridSize - 1 and x == gridSize - 1:
-                    transformed = [
-                        boardCopy[y][x],
-                        boardCopy[gridSize - 1][0],
-                        boardCopy[0][gridSize - 1],
-                        boardCopy[0][0]
-                    ]
-                if y < gridSize - 1 and x < gridSize - 1:
-                    transformed = [
-                        boardCopy[y][x],
-                        boardCopy[y][x + 1],
-                        boardCopy[y + 1][x],
-                        boardCopy[y + 1][x + 1]
-                    ]
+        global board
+        for y in range(0,int(len(board)),2):
+            for x in range(0,int(len(board[y])),2):
+                nc = neighbourCount(x,y)
                 # tutaj zdefiniujemy zasady a potem x i y +1 i mamy drugą siatke K
                 if nc == [1, 0, 0, 0]:
-                    if 2*y < gridSize - 1 and 2*x < gridSize - 1:
-                        #  transformed[0]=0
-                        # transformed[1]=0
-                        # transformed[2]=0
-                        # transformed[3]=1
-                        boardCopy[2*y][2*x]=0
-                        boardCopy[2*y][2*x + 1]=0
-                        boardCopy[2*y + 1][2*x]=0
-                        boardCopy[2*y + 1][2*x + 1]=1
-
-    if (Count%2 == 1):
-        boardCopy = board
-        Count=Count+1
-        for y in range(int(len(board))//2):
-            for x in range(int(len(board))//2):
-
-                nc = neighbourCount(2*x+1,2*y+1)
-                if x == gridSize - 1 and y < gridSize - 1:
-                    transformed = [
-                        boardCopy[y][gridSize - 1],
-                        boardCopy[y][0],
-                        boardCopy[y + 1][x],
-                        boardCopy[y + 1][0]
-                    ]
-                if y == gridSize - 1 and x < gridSize - 1:
-                    transformed = [
-                        boardCopy[y][x],
-                        boardCopy[y][x + 1],
-                        boardCopy[0][x],
-                        boardCopy[0][x + 1]
-                    ]
-                if y == gridSize - 1 and x == gridSize - 1:
-                    transformed = [
-                        boardCopy[y][x],
-                        boardCopy[gridSize - 1][0],
-                        boardCopy[0][gridSize - 1],
-                        boardCopy[0][0]
-                    ]
-                if y < gridSize - 1 and x < gridSize - 1:
-                    transformed = [
-                        boardCopy[y][x],
-                        boardCopy[y][x + 1],
-                        boardCopy[y + 1][x],
-                        boardCopy[y + 1][x + 1]
-                    ]
+                    transform(0,0,0,1,x,y,board)
+def processBoard2():
+        for y in range(1,int(len(board)),2):
+            for x in range(1,int(len(board[y])),2):
+                nc = neighbourCount(x,y)
                 # tutaj zdefiniujemy zasady a potem x i y +1 i mamy drugą siatke K
                 if nc == [1, 0, 0, 0]:
-                    if 2*y < gridSize - 2 and 2*x < gridSize - 2:
-                        #  transformed[0]=0
-                        # transformed[1]=0
-                        # transformed[2]=0
-                        # transformed[3]=1
-                        boardCopy[2*y+1][2*x+1] = 0
-                        boardCopy[2*y+1][2*x + 2] = 0
-                        boardCopy[2*y + 2][2*x+1] = 0
-                        boardCopy[2*y + 2][2*x + 2] = 1
+                   transform(0, 0, 0, 1, x,y,board)
 
-    board = boardCopy
+
+
 
 
 def drawCells():
@@ -215,7 +161,10 @@ while running:
 
     if (time - prevTime).total_seconds() > updateTime:
         processBoard()
-
+        prevTime = time
+    time=datetime.now()
+    if (time - prevTime).total_seconds() > updateTime:
+        processBoard2()
         prevTime = time
 
     if drawGridLines:
