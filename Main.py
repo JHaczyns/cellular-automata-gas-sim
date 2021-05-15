@@ -1,15 +1,15 @@
 import pygame
 from datetime import datetime
 
-black = (255, 255, 255)
-white = (0, 0, 0)
+white = (255, 255, 255)
+black = (0, 0, 0)
 (width, height) = (800, 800)  # Dimension of the window
 screen = pygame.display.set_mode((width, height))  # Making of the screen
 pygame.display.set_caption("Cellular automaton")
 
-gridSize = 6  # musi być wielokrotnością 2
+gridSize = 36  # musi być wielokrotnością 2
 drawGridLines = True
-updateTime = 0.05
+updateTime = 0.01
 board = [];
 file =open("test")
 tablicatestowa=[]
@@ -34,17 +34,17 @@ def initBoard():
 
 def drawGrid():
     for y in range(1, gridSize):
-        pygame.draw.line(screen, white, (0, int((height / gridSize) * y)), (width, int((height / gridSize) * y)), 1)
+        pygame.draw.line(screen, black, (0, int((height / gridSize) * y)), (width, int((height / gridSize) * y)), 1)
 
     for x in range(1, gridSize):
-        pygame.draw.line(screen, white, (int((width / gridSize) * x), 0), (int((width / gridSize) * x), height), 1)
+        pygame.draw.line(screen, black, (int((width / gridSize) * x), 0), (int((width / gridSize) * x), height), 1)
 
 
 def fillCell(x, y):
     if x < 0 or x > gridSize or y < 0 or y > gridSize:
         raise Exception("Invalid coords: " + str(x) + ":" + str(y));
 
-    pygame.draw.rect(screen, white, (
+    pygame.draw.rect(screen, black, (
         x * int(width / gridSize), int(y * (height / gridSize)), int(width / gridSize), int(height / gridSize)))
 
 
@@ -149,10 +149,10 @@ def drawCells():
 
 
 pattern = [
-    [1, 0, 0, 0, 0, 0, ],
     [0, 0, 0, 0, 0, 0, ],
-    [1, 0, 0, 0, 0, 0, ],
-    [1, 0, 0, 0, 0, 0, ],
+    [0, 1, 0, 1, 0, 1, ],
+    [0, 0, 1, 1, 0, 0, ],
+    [0, 0, 1, 1, 0, 0, ],
     [0, 0, 0, 0, 0, 0, ],
     [0, 0, 0, 0, 0, 0, ],
 ]
@@ -178,7 +178,7 @@ prevTime = datetime.now()
 
 while running:
     time = datetime.now()
-    screen.fill(black)
+    screen.fill(white)
 
     if (time - prevTime).total_seconds() > updateTime:
         processBoard()
