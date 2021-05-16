@@ -110,6 +110,12 @@ def neighbourCount(x, y):
    #     UR = board[gridSize - 1][0]
    #     DL = board[0][gridSize - 1]
    #     DR = board[0][0]
+
+
+#UWAGA!!!!!
+#To poniżej też może być źle i chyba jest, ale trzeba to ogarnąć tylko tutaj w zasadzie, bo
+ #   do transform to sie łatwo przeklei, albo na odwrót:
+    #Mozna to tez zrobić w transform a dopierow później tutaj przkelić
     if y < gridSize - 2 and x < gridSize - 2:
         U0=board[y][x]
         U1=board[y][x + 1]
