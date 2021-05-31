@@ -27,7 +27,7 @@ board = []
 #odczytanie pliku z zdefiniowanymi zasadami gry, w formacie X,X,X,X Y,Y,Y,Y
 # kolejne X to stan sprawdzany, a Y- stan generowany w kolejności Lewy górny róg,
 #Prawy górny róg, Lewy dolny róg, prawy dolny róg
-filename="3test"
+filename= "Pliki testowe/3test"
 randompatternsize=51
 
 

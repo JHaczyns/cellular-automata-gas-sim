@@ -27,7 +27,7 @@ board = []
 #odczytanie pliku z zdefiniowanymi zasadami gry, w formacie X,X,X,X Y,Y,Y,Y
 # kolejne X to stan sprawdzany, a Y- stan generowany w kolejności Lewy górny róg,
 #Prawy górny róg, Lewy dolny róg, prawy dolny róg
-filename="test"
+filename= "Pliki testowe/test"
 randompatternsize=50
 
 event, values = sg.Window('Wybierz zestaw reguł', [[sg.Text('Wybierz zestaw reguł:'), sg.Listbox(['Negacja.txt','NieDlaEpileptykow.txt', 'Interesujace.txt'], size=(20, 3), key='Choice')],
@@ -38,10 +38,10 @@ if event == 'Ok':
 
     try:
         sg.popup(f'Wybrano {values["Choice"][0]}')
-        filename=values["Choice"][0]
+        filename="Pliki testowe/"+values["Choice"][0]
         randompatternsize=int(values["Choice2"][0])
     except Exception:
-        filename="test"
+        filename= "Pliki testowe/test"
         randompatternsize = 50
 
 
