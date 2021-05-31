@@ -1,7 +1,14 @@
-#Projekt: Automaty komórkowe
+# Projekt: Automaty komórkowe
 
-##Wstęp:
--tutaj coś napisać o teori
-##Sposób realizacji:
+## Wstęp:
+Automat komórkowy - jest to system składający się z poszczególnych komórek które 
+sąsiadują ze sobą wedle pewnego wcześniej ustalonego wzorca.Każda z komórek może przyjąć jeden ze stanów, przy czym liczba stanów jest skończona, ale dowolnie duża. Stan komórki zmieniany jest synchronicznie zgodnie z regułami mówiącymi, w jaki sposób nowy stan komórki zależy od jej obecnego stanu i stanu jej sąsiadów.[1](#1)
+## Sposób realizacji:
 
-##Wymagania:
+## Wymagania:
+Aby program mógł zostać skompilowny potrzeba pakietu pygame 
+dostępnego pod tym adresem:
+https://github.com/pygame/pygame
+
+## Źródła:
+<a id="1">[1]</a>  https://pl.wikipedia.org/wiki/Automat_kom%C3%B3rkowy
