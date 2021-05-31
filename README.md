@@ -1,5 +1,5 @@
-#Projekt:Automaty komórkowe
-##Wstęp:
+# Projekt:Automaty komórkowe
+## Wstęp:
 -tutaj coś napisać o teori
-##Sposób realizacji:
-##Wymagania:
+## Sposób realizacji:
+## Wymagania:
