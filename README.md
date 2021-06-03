@@ -18,4 +18,4 @@ dostępnego pod tym adresem:
 https://github.com/pygame/pygame
 
 ## Źródła:
-<a id="1">[1]</a>  https://pl.wikipedia.org/wiki/Automat_kom%C3%B3rkowy
+<a id="1">[1]</a>  https://arxiv.org/abs/comp-gas/9811002v1
