@@ -1,23 +1,29 @@
 import pygame
 from datetime import datetime
-import random
+
 import numpy as np
 from pygame.locals import *
 import PySimpleGUI as sg
+import itertools
+
 #Definicja kolorów RGB
 white = (255, 255, 255)
 black = (0, 0, 0)
-(width, height) = (800, 800)  # Rozmiar okna
+(width, height) = (1000, 1000)  # Rozmiar okna
 #Nazwa okna
 pygame.display.set_caption("Automat Komórkowy")
 #Flaga podwójnego buforu (zwiększa wydajność)
-flags = DOUBLEBUF
+flags=DOUBLEBUF
 #Rozdzielczość na podstawie rozmiarów okna
-resolution=[width,height]
+
 #Zdefiniowanie okna
-screen = pygame.display.set_mode(resolution, flags, 16)
+
 #Rozmiar siatki
-gridSize = 100  # musi być wielokrotnością 2
+gridSize = 200 # musi być wielokrotnością 2
+(width, height) = (4*gridSize, 4*gridSize)  # Rozmiar okna
+resolution=[width,height]
+screen = pygame.display.set_mode(resolution,flags,16)
+# Rozmiar okna
 #Opcja renderowania linii siatki
 drawGridLines = False
 #Minimalny interwał pomiedzy kolejnymi klatkami
@@ -29,7 +35,7 @@ board = []
 #Prawy górny róg, Lewy dolny róg, prawy dolny róg
 filename= "Pliki testowe/test"
 randompatternsize=50
-
+pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
 event, values = sg.Window('Wybierz zestaw reguł', [[sg.Text('Wybierz zestaw reguł:'), sg.Listbox(['Negacja.txt','NieDlaEpileptykow.txt', 'Interesujace.txt'], size=(20, 3), key='Choice')],
 [sg.Text('Wybierz rozmiar generowanego wzoru'), sg.Listbox(['10','20', '50','100'], size=(20, 3), key='Choice2')],
     [sg.Button('Ok'), sg.Button('Domyślny')]]).read(close=True)
@@ -50,6 +56,7 @@ if event == 'Ok':
 else:
     sg.popup('W takim razie uruchomiona zostanie wersja domyślna')
 
+tablicaliczbowa=[[0,0,0,0],[0,0,0,1],[0,0,1,0],[0,0,1,1],[0,1,0,0],[0,1,0,1],[0,1,1,0],[0,1,1,1],[1,0,0,0],[1,0,0,1],[1,0,1,0],[1,0,1,1],[1,1,0,0],[1,1,0,1],[1,1,1,0],[1,1,1,1]]
 
 file =open(filename)
 tablicatestowa=[]
@@ -60,6 +67,13 @@ for i in file:
         for w in x:
             w=int(w)
         tablicatestowa.append([int(x[0]),int(x[1]),int(x[2]),int(x[3])])
+
+tablicaregulowa=[]
+
+file =open("Gaz")
+tablicatestowa=[]
+for i in file:
+        tablicaregulowa.append(i)
 
 
 
@@ -82,21 +96,21 @@ def drawGrid():
 
 #Funkcja wypełniająca białe piksele
 def fillCellWhite(x, y):
-    if x < 0 or x > gridSize or y < 0 or y > gridSize:
-        raise Exception("Invalid coords: " + str(x) + ":" + str(y));
+    # if x < 0 or x > gridSize or y < 0 or y > gridSize:
+    #     raise Exception("Invalid coords: " + str(x) + ":" + str(y));
 
     pygame.draw.rect(screen, white, (
-        x * int(width / gridSize), int(y * (height / gridSize)), int(width / gridSize), int(height / gridSize)))
+         x * int(width / gridSize), int(y * (height / gridSize)), int(width / gridSize), int(height / gridSize)))
 
-
+    #pygame.draw.rect(screen, white, (x ,y,1,1))
 #Funkcja wypełniająca czarne piksele
 def fillCellBlack(x, y):
-    if x < 0 or x > gridSize or y < 0 or y > gridSize:
-        raise Exception("Invalid coords: " + str(x) + ":" + str(y));
-
+    # if x < 0 or x > gridSize or y < 0 or y > gridSize:
+    #     raise Exception("Invalid coords: " + str(x) + ":" + str(y));
     pygame.draw.rect(screen, black, (
-        x * int(width / gridSize), int(y * (height / gridSize)), int(width / gridSize), int(height / gridSize)))
+         x * int(width / gridSize), int(y * (height / gridSize)), int(width / gridSize), int(height / gridSize)))
 
+    #pygame.draw.rect(screen, black, ( x ,y,1,1))
 #Funkcja umieszczająca piksele w odpowiedniej części tablicy zależnej od offsetu
 def placePattern(pattern, offset_x, offset_y):
     global board
@@ -134,6 +148,103 @@ def neighbourCount(x, y):
 
     neighbours = [UL, UR, DL, DR]
     return neighbours
+def neighbourCount2(x, y):
+    count =0;
+    if y < gridSize - 1 and x < gridSize - 1:
+
+        count = 1*board[y][x]+2*board[y][x + 1] + 4* board[y + 1][x] + 8*board[y + 1][x + 1]
+
+    if x == gridSize - 1 and y < gridSize - 1:
+
+        count=1* board[y][gridSize - 1]+2* board[y][0]+4* board[y + 1][x]+8* board[y + 1][0]
+    if y == gridSize - 1 and x < gridSize - 1:
+
+        count =1* board[y][x]+2* board[y][x + 1]+ 4*board[0][x]+ 8*board[0][x + 1]
+    if y == gridSize - 1 and x == gridSize - 1:
+
+        count = board[y][x]+ + 2*board[gridSize - 1][0] +4*board[0][gridSize - 1]+ 8*board[0][0]
+
+    return count;
+
+
+
+
+
+def transform2(x,y,boards):
+    # count=neighbourCount2(x,y);
+    # wynik=int(tablicaregulowa[count])
+    #
+    # UL = int(tablicaliczbowa[wynik][3])
+    # UR = int(tablicaliczbowa[wynik][2])
+    # DL = int(tablicaliczbowa[wynik][1])
+    # DR = int(tablicaliczbowa[wynik][0])
+    if y < gridSize - 1 and x < gridSize - 1:
+
+        count = 1 * board[y][x] + 2 * board[y][x + 1] + 4 * board[y + 1][x] + 8 * board[y + 1][x + 1]
+        wynik = int(tablicaregulowa[count])
+        UL = int(tablicaliczbowa[wynik][3])
+        UR = int(tablicaliczbowa[wynik][2])
+        DL = int(tablicaliczbowa[wynik][1])
+        DR = int(tablicaliczbowa[wynik][0])
+
+
+        boards[y][x] = UL
+        boards[y][x + 1] = UR
+        boards[y + 1][x] = DL
+        boards[y + 1][x + 1] = DR
+
+
+    if x == gridSize - 1 and y < gridSize - 1:
+
+        count = 1 * board[y][gridSize - 1] + 2 * board[y][0] + 4 * board[y + 1][x] + 8 * board[y + 1][0]
+
+        wynik = int(tablicaregulowa[count])
+
+        UL = int(tablicaliczbowa[wynik][3])
+        UR = int(tablicaliczbowa[wynik][2])
+        DL = int(tablicaliczbowa[wynik][1])
+        DR = int(tablicaliczbowa[wynik][0])
+
+        boards[y][gridSize - 1] = UL
+        boards[y][0] = UR
+        boards[y + 1][x] = DL
+        boards[y + 1][0] = DR
+
+
+    if y == gridSize - 1 and x < gridSize - 1:
+        count = 1 * board[y][x] + 2 * board[y][x + 1] + 4 * board[0][x] + 8 * board[0][x + 1]
+
+        wynik = int(tablicaregulowa[count])
+
+        UL = int(tablicaliczbowa[wynik][3])
+        UR = int(tablicaliczbowa[wynik][2])
+        DL = int(tablicaliczbowa[wynik][1])
+        DR = int(tablicaliczbowa[wynik][0])
+
+        boards[y][x] = UL
+        boards[y][x + 1] = UR
+        boards[0][x] = DL
+        boards[0][x + 1] = DR
+
+
+    if y == gridSize - 1 and x == gridSize - 1:
+
+        count = board[y][x] + + 2 * board[gridSize - 1][0] + 4 * board[0][gridSize - 1] + 8 * board[0][0]
+
+        wynik = int(tablicaregulowa[count])
+
+        UL = int(tablicaliczbowa[wynik][3])
+        UR = int(tablicaliczbowa[wynik][2])
+        DL = int(tablicaliczbowa[wynik][1])
+        DR = int(tablicaliczbowa[wynik][0])
+
+        boards[y][x] = UL
+        boards[gridSize - 1][0] = UR
+        boards[0][gridSize - 1] = DL
+        boards[0][0] = DR
+
+    return board
+
 #Funkcja przekształcająca dane komórki na podstawie wartości tablicy tab
 def transform(tab,x,y,boards):
                 UL=int(tab[0])
@@ -146,6 +257,7 @@ def transform(tab,x,y,boards):
                     boards[y][0]=UR
                     boards[y + 1][x]=DL
                     boards[y + 1][0]=DR
+
                 if y == gridSize - 1 and x < gridSize - 1:
                     boards[y][x]=UL
                     boards[y][x + 1]=UR
@@ -162,7 +274,8 @@ def transform(tab,x,y,boards):
                     boards[y + 1][x]=DL
                     boards[y + 1][x + 1]=DR
 
-                boards=board
+
+
                 return board
 
 #Funkcja obliczająca zmiany dla siatki 2x2 bez przesunięcia
@@ -170,26 +283,26 @@ def processBoard():
         global board
         for y in range(0,int(len(board)),2):
             for x in range(0,int(len(board[y])),2):
-                for i in range(0, len(tablicatestowa), 2):
-                    nc = neighbourCount(x,y)
-                    #definicja zasad według których działa funkcja transform
+                transform2(x,y,board)
+                # for i in range(0, len(tablicatestowa), 2):
+                #     #definicja zasad według których działa funkcja transform
+                #     if nc == tablicatestowa[i]:
+                #             test = tablicatestowa[i+1]
+                #             transform(test, x, y, board)
 
-                    if nc == tablicatestowa[i]:
-                            test = tablicatestowa[i+1]
-                            transform(test, x, y, board)
         return board
 #Funkcja obliczająca zmiany dla siatki 2x2 z przesunięciem o 1 piksel w każdym wymiarze
 def processBoard2():
         global board
         for y in range(1,int(len(board)),2):
             for x in range(1,int(len(board[y])),2):
-                for i in range(0, len(tablicatestowa), 2):
-                    nc = neighbourCount(x, y)
-                    #definicja zasad według których działa funkcja transform
+                transform2(x, y, board)
+                # for i in range(0, len(tablicatestowa), 2):
+                #     #definicja zasad według których działa funkcja transform
+                #     if nc == tablicatestowa[i]:
+                #         test = tablicatestowa[i + 1]
+                #         transform(test, x, y, board)
 
-                    if nc == tablicatestowa[i]:
-                        test = tablicatestowa[i + 1]
-                        transform(test, x, y, board)
         return board
 
 
@@ -200,52 +313,62 @@ def drawCells():
         for x in range(len(board[y])):
             if board[y][x] == 1:
                 fillCellBlack(x, y)
-            if board[y][x] == 0:
-                fillCellWhite(x, y)
+
 
 #Przykładowy wzór do wykorzystania w ramach testów
 pattern = [
-[1,1,1,1,1,1,1,1 ],
-[1,1,1,1,1,1,1,1 ],
-[1,1,1,1,1,1,1,1 ],
-[1,1,1,1,1,1,1,1 ],
-[1,1,1,1,1,1,1,1 ],
-[1,1,1,1,1,1,1,1 ],
-[1,1,1,1,1,1,1,1 ],
-[1,1,1,1,1,1,1,1 ]
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1],
+]
+pattern2 = [
+[1]
 ]
 #Funkcja generująca losowe wzory
 def drawrandompatern(size):
     tab= np.random.randint(2,size=(size, size))
     return tab
-
+def drawblack(size):
+    tab=[]
+    for y in range(size):
+        row = []
+        for x in range(size):
+            row.append(1)
+        tab.append(row)
+    return tab
 
 #inicjalizacja tablicy
 initBoard()
 #Umieszczenie wzoru w tablicy
-placePattern(drawrandompatern(randompatternsize), 0, 0)
-#placePattern(pattern,0,0)
-
+placePattern(drawrandompatern(gridSize), 0, 0)
+placePattern(drawblack(50),75,75)
+#placePattern(pattern2,0,0)
 #Pobranie aktualnego czasu
 prevTime = datetime.now()
+even=True
+clock = pygame.time.Clock()
 #Pętla zapewniająca ciągłość pracy programu
 while 1:
     #pobranie drugiej próbki czasu
-    time = datetime.now()
     #Funkcja wypełniająca ekran
     screen.fill(white)
     #Na podstawie zmiany w pobranych próbkach czasu wykonywana jest procedura
     #odświeżenia tablicy z naniesieniem zmian
-    if (time - prevTime).total_seconds() > updateTime:
+    if(even):
         processBoard()
-        drawCells()
-        pygame.display.flip()
+    else:
         processBoard2()
-        drawCells()
-        pygame.display.flip()
-        prevTime = time
-        drawGridLines=not drawGridLines
-
+    even=not even
     #Opcja narysowania linii siatki w zależnosci od przyjętego wcześniej parametru
     if drawGridLines:
         drawGrid()
@@ -253,9 +376,14 @@ while 1:
     drawCells()
     #Wyświetlenie zmian
     pygame.display.flip()
+    clock.tick()
+    fps=0
+    if fps<clock.get_fps():
+        fps=clock.get_fps()
     #Możliwość zamknięcia programu
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
-            exit()
+            print(fps)
+
