@@ -75,7 +75,9 @@ tablicatestowa=[]
 for i in file:
         tablicaregulowa.append(i)
 
-
+def randomrules(range):
+    tab = np.random.randint(range, size=(16))
+    return tab
 
 #Funkcja inicjalizująca tablicę o rozmiarze gridSize x gridSize
 def initBoard():
@@ -170,7 +172,7 @@ def neighbourCount2(x, y):
 
 
 
-def transform2(x,y,boards):
+def transform2(x,y,boards,tab):
     # count=neighbourCount2(x,y);
     # wynik=int(tablicaregulowa[count])
     #
@@ -181,7 +183,7 @@ def transform2(x,y,boards):
     if y < gridSize - 1 and x < gridSize - 1:
 
         count = 1 * board[y][x] + 2 * board[y][x + 1] + 4 * board[y + 1][x] + 8 * board[y + 1][x + 1]
-        wynik = int(tablicaregulowa[count])
+        wynik = int(tab[count])
         UL = int(tablicaliczbowa[wynik][3])
         UR = int(tablicaliczbowa[wynik][2])
         DL = int(tablicaliczbowa[wynik][1])
@@ -198,7 +200,7 @@ def transform2(x,y,boards):
 
         count = 1 * board[y][gridSize - 1] + 2 * board[y][0] + 4 * board[y + 1][x] + 8 * board[y + 1][0]
 
-        wynik = int(tablicaregulowa[count])
+        wynik = int(tab[count])
 
         UL = int(tablicaliczbowa[wynik][3])
         UR = int(tablicaliczbowa[wynik][2])
@@ -214,7 +216,7 @@ def transform2(x,y,boards):
     if y == gridSize - 1 and x < gridSize - 1:
         count = 1 * board[y][x] + 2 * board[y][x + 1] + 4 * board[0][x] + 8 * board[0][x + 1]
 
-        wynik = int(tablicaregulowa[count])
+        wynik = int(tab[count])
 
         UL = int(tablicaliczbowa[wynik][3])
         UR = int(tablicaliczbowa[wynik][2])
@@ -231,7 +233,7 @@ def transform2(x,y,boards):
 
         count = board[y][x] + + 2 * board[gridSize - 1][0] + 4 * board[0][gridSize - 1] + 8 * board[0][0]
 
-        wynik = int(tablicaregulowa[count])
+        wynik = int(tab[count])
 
         UL = int(tablicaliczbowa[wynik][3])
         UR = int(tablicaliczbowa[wynik][2])
@@ -279,11 +281,11 @@ def transform(tab,x,y,boards):
                 return board
 
 #Funkcja obliczająca zmiany dla siatki 2x2 bez przesunięcia
-def processBoard():
+def processBoard(tab):
         global board
         for y in range(0,int(len(board)),2):
             for x in range(0,int(len(board[y])),2):
-                transform2(x,y,board)
+                transform2(x,y,board,tab)
                 # for i in range(0, len(tablicatestowa), 2):
                 #     #definicja zasad według których działa funkcja transform
                 #     if nc == tablicatestowa[i]:
@@ -292,11 +294,11 @@ def processBoard():
 
         return board
 #Funkcja obliczająca zmiany dla siatki 2x2 z przesunięciem o 1 piksel w każdym wymiarze
-def processBoard2():
+def processBoard2(tab):
         global board
         for y in range(1,int(len(board)),2):
             for x in range(1,int(len(board[y])),2):
-                transform2(x, y, board)
+                transform2(x, y, board,tab)
                 # for i in range(0, len(tablicatestowa), 2):
                 #     #definicja zasad według których działa funkcja transform
                 #     if nc == tablicatestowa[i]:
@@ -350,13 +352,18 @@ def drawblack(size):
 #inicjalizacja tablicy
 initBoard()
 #Umieszczenie wzoru w tablicy
-placePattern(drawrandompatern(gridSize), 0, 0)
-placePattern(drawblack(50),75,75)
-#placePattern(pattern2,0,0)
+placePattern(drawrandompatern(15), 70, 70)
+#placePattern(drawblack(1),75,75)
+placePattern(pattern2,0,0)
 #Pobranie aktualnego czasu
 prevTime = datetime.now()
 even=True
 clock = pygame.time.Clock()
+tab = randomrules(14)
+tab[0]=0
+tab[7]=5
+tab[15]=15
+print(tab)
 #Pętla zapewniająca ciągłość pracy programu
 while 1:
     #pobranie drugiej próbki czasu
@@ -365,9 +372,9 @@ while 1:
     #Na podstawie zmiany w pobranych próbkach czasu wykonywana jest procedura
     #odświeżenia tablicy z naniesieniem zmian
     if(even):
-        processBoard()
+        processBoard(tab)
     else:
-        processBoard2()
+        processBoard2(tab)
     even=not even
     #Opcja narysowania linii siatki w zależnosci od przyjętego wcześniej parametru
     if drawGridLines:
@@ -386,4 +393,4 @@ while 1:
             running = False
             pygame.quit()
             print(fps)
-
+            exit()
