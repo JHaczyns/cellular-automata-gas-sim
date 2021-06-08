@@ -10,7 +10,7 @@ zgodnie z regułami mówiącymi, w jaki sposób nowy stan komórki
 zależy od jej obecnego stanu i stanu jej sąsiadów.[1](#1)
 ## Sposób realizacji:
 
-Program zrealizowano przy pomocy silnika pygame który pozwala na dynamiczne rysowanie zmian i odświeżanie obrazu.
+Program zrealizowano przy pomocy silnika pygame, który pozwala na dynamiczne rysowanie zmian i odświeżanie obrazu.
 
 ## Wymagania:
 Aby program mógł zostać skompilowny potrzeba pakietu pygame 

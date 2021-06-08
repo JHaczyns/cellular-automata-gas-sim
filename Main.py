@@ -23,38 +23,28 @@ updateTime = 0.1
 board = []
 randompatternsize=50
 pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
-event, values = sg.Window('Wybierz zestaw reguł', [[sg.Text('Wybierz zestaw reguł:'), sg.Listbox(['Negacja.txt','NieDlaEpileptykow.txt', 'Interesujace.txt'], size=(20, 3), key='Choice')],
-[sg.Text('Wybierz rozmiar generowanego wzoru'), sg.Listbox(['10','20', '50','100'], size=(20, 3), key='Choice2')],
-    [sg.Button('Ok'), sg.Button('Domyślny')]]).read(close=True)
-
-if event == 'Ok':
-
-    try:
-        sg.popup(f'Wybrano {values["Choice"][0]}')
-        filename="Pliki testowe/"+values["Choice"][0]
-        randompatternsize=int(values["Choice2"][0])
-    except Exception:
-        filename= "Pliki testowe/test"
-        randompatternsize = 50
+event, values = sg.Window('Wybierz zestaw reguł', [[sg.Text('Wybierz zestaw reguł:'), sg.Listbox(['gaz','losowe'], size=(20, 3), key='Choice')],
+[sg.Text('Wybierz rozmiar generowanego wzoru'), sg.Listbox(['10','20','50','100'], size=(20, 3), key='Choice2')],
+[sg.Button('Ok'), sg.Button('Domyślny')]]).read(close=True)
 
 
 
 
-else:
-    sg.popup('W takim razie uruchomiona zostanie wersja domyślna')
 
+
+#Tablica dostępnych stanów
 tablicaliczbowa=[[0,0,0,0],[0,0,0,1],[0,0,1,0],[0,0,1,1],[0,1,0,0],[0,1,0,1],[0,1,1,0],[0,1,1,1],[1,0,0,0],[1,0,0,1],[1,0,1,0],[1,0,1,1],[1,1,0,0],[1,1,0,1],[1,1,1,0],[1,1,1,1]]
 
 
 tablicaregulowa=[]
-file =open("Gaz")
-tablicatestowa=[]
-for i in file:
-        tablicaregulowa.append(i)
+#Wczytanie pliku z zasadami symulującymi gaz
 
+#Funkcja generująca losowe zasady
 def randomrules(range):
     tab = np.random.randint(range, size=(16))
     return tab
+
+
 
 #Funkcja inicjalizująca tablicę o rozmiarze gridSize x gridSize
 def initBoard():
@@ -209,20 +199,48 @@ def drawblack(size):
 #inicjalizacja tablicy
 initBoard()
 #Umieszczenie wzoru w tablicy
-placePattern(drawrandompatern(gridSize), 0, 0)
-placePattern(drawblack(50),75,75)
+#placePattern(drawblack(50),75,75)
 #placePattern(pattern2,0,0)
 #Pobranie aktualnego czasu
 
 even=True
 clock = pygame.time.Clock()
-
-tab = randomrules(15)
-tab[0]=0
-tab[15]=15
 fps=0
 
 #Pętla zapewniająca ciągłość pracy programu
+
+if event == 'Ok':
+
+    try:
+        if (values["Choice"][0] == "losowe"):
+            tablicaregulowa=randomrules(14)
+            randompatternsize = int(values["Choice2"][0])
+            placePattern(drawrandompatern(randompatternsize), 75, 75)
+        else:
+            sg.popup(f'Wybrano {values["Choice"][0]}')
+            filename = "Pliki testowe/" + values["Choice"][0]
+            randompatternsize = int(values["Choice2"][0])
+            file = open(filename)
+            placePattern(drawrandompatern(gridSize), 0, 0)
+            placePattern(drawblack(randompatternsize),int((gridSize - randompatternsize) / 2),int((gridSize - randompatternsize) / 2))
+            for i in file:
+                tablicaregulowa.append(i)
+    finally:
+        pass
+        # file = open(filename)
+        # placePattern(drawrandompatern(gridSize), 0, 0)
+        # placePattern(drawblack(randompatternsize), (gridSize - randompatternsize) // 2, (gridSize - randompatternsize) // 2)
+        # for i in file:
+        #     tablicaregulowa.append(i)
+else:
+    sg.popup('W takim razie uruchomiona zostanie wersja domyślna')
+    filename = "Pliki testowe/Gaz"
+    randompatternsize = 50
+    file = open(filename)
+    placePattern(drawrandompatern(gridSize), 0, 0)
+    placePattern(drawblack(randompatternsize), int((gridSize - randompatternsize) / 2), int((gridSize - randompatternsize) / 2))
+    for i in file:
+        tablicaregulowa.append(i)
 
 while 1:
 
